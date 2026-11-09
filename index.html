@@ -1,9 +1,12 @@
+HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ava Shah | Interactive Resume</title>
+    
+    <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap');
         
@@ -13,41 +16,102 @@
             --lavender: #f3e8ff;
             --bg-color: #faf5ff;
             --text-dark: #2e1065;
+            --spotlight-x: 50%;
+            --spotlight-y: 50%;
         }
 
-        body {
+        body, html {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-dark);
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            /* Subtle floral/dotted background */
+            overflow-x: hidden;
+        }
+
+        /* Subtle floral/dotted background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-image: radial-gradient(var(--lavender) 2px, transparent 2px);
             background-size: 40px 40px;
+            z-index: -2;
         }
+
+        /* 1. "Clarity" Spotlight Effect */
+        .spotlight-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle 300px at var(--spotlight-x) var(--spotlight-y), transparent 0%, rgba(250, 245, 255, 0.85) 80%);
+            pointer-events: none;
+            z-index: 10;
+            transition: background 0.1s ease;
+        }
+
+        /* 2. EKG Scroll Progress Bar */
+        #ekg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        #ekg-path {
+            fill: none;
+            stroke: var(--purple-main);
+            stroke-width: 3;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        /* 3. Three.js Brain Container */
+        #brain-canvas-container {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 150px;
+            height: 150px;
+            z-index: 20;
+            cursor: grab;
+        }
+        #brain-canvas-container:active { cursor: grabbing; }
 
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
             color: var(--deep-plum);
+            position: relative;
+            z-index: 11;
         }
 
         header {
             text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, var(--lavender) 0%, var(--bg-color) 100%);
+            padding: 6rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--lavender) 0%, transparent 100%);
             border-bottom: 2px solid var(--purple-main);
+            position: relative;
+            z-index: 11;
         }
-
-        header h1 {
-            font-size: 3.5rem;
-            margin: 0;
-        }
+        header h1 { font-size: 3.5rem; margin: 0; }
 
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 2rem;
+            position: relative;
+            z-index: 11;
+        }
+
+        /* 4. Magnetic Elements */
+        .magnetic {
+            display: inline-block;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         /* Blooming Cards */
@@ -57,7 +121,6 @@
             gap: 2rem;
             margin-top: 2rem;
         }
-
         .card {
             background: white;
             padding: 2rem;
@@ -69,15 +132,22 @@
             color: inherit;
             display: block;
         }
-
         .card:hover {
             transform: translateY(-10px) scale(1.02);
             border-top-color: var(--purple-main);
             box-shadow: 0 10px 20px rgba(126, 34, 206, 0.2);
-            background-color: #fffafb; 
+            background-color: #fffafb;
         }
 
-        /* Video Embed */
+        /* 5. Draggable Research Garden */
+        .draggable {
+            cursor: grab;
+            user-select: none;
+            position: relative;
+        }
+        .draggable:active { cursor: grabbing; }
+
+        /* 6. Video Hover Preview (Simulated via CSS overlay) */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -87,101 +157,88 @@
             box-shadow: 0 4px 15px rgba(126, 34, 206, 0.2);
             margin: 2rem 0;
             border: 4px solid var(--lavender);
+            transition: border-color 0.3s ease;
         }
-
+        .video-container:hover { border-color: var(--purple-main); }
         .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(46, 16, 101, 0.8);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
+        /* Simulated preview scanline effect on hover */
+        .video-container::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
+        .video-container:hover::after { opacity: 1; animation: scanlines 1s linear infinite; }
+        @keyframes scanlines { 0% { background-position: 0 0; } 100% { background-position: 0 4px; } }
 
-        .modal-content {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-            border-left: 8px solid var(--purple-main);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--deep-plum);
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--purple-main);
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 25px;
-            transition: background 0.3s;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            background: var(--deep-plum);
-        }
-
-        /* Floral Timeline */
-        .timeline {
-            border-left: 3px solid var(--lavender);
-            margin-left: 1rem;
-            padding-left: 2rem;
-        }
-
-        .timeline-item {
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
+        /* Timeline */
+        .timeline { border-left: 3px solid var(--lavender); margin-left: 1rem; padding-left: 2rem; }
+        .timeline-item { margin-bottom: 2rem; position: relative; }
         .timeline-item::before {
             content: '✿';
             color: var(--purple-main);
-            position: absolute;
-            left: -2.85rem;
-            top: 0;
-            font-size: 1.5rem;
-            background: var(--bg-color);
+            position: absolute; left: -2.85rem; top: 0;
+            font-size: 1.5rem; background: var(--bg-color);
         }
+
+        /* 7. Python Easter Egg Terminal */
+        #easter-egg-trigger { cursor: pointer; color: var(--purple-main); text-decoration: underline; font-weight: bold; }
+        #terminal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.95); z-index: 9999;
+            color: #0f0; font-family: 'Courier New', Courier, monospace;
+            padding: 2rem; box-sizing: border-box; flex-direction: column;
+        }
+        .terminal-header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;}
+        .close-term { cursor: pointer; color: #f00; font-weight: bold; }
+        #term-input-line { display: flex; align-items: center; }
+        #term-input { 
+            background: transparent; border: none; color: #0f0; font-family: inherit; 
+            font-size: 1rem; outline: none; width: 100%; margin-left: 10px;
+        }
+        #term-output { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.5; }
+
     </style>
+    <!-- Three.js for 3D Brain Model -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <header>
-        <h1>Ava Shah</h1>
+    <div class="bg-pattern"></div>
+    <div class="spotlight-overlay" id="spotlight"></div>
+
+    <!-- EKG Scroll SVG -->
+    <svg id="ekg-container" viewBox="0 0 1000 40" preserveAspectRatio="none">
+        <path id="ekg-path" d="M0,20 L100,20 L120,0 L140,40 L160,10 L170,20 L1000,20" />
+    </svg>
+
+    <!-- 3D Brain Container -->
+    <div id="brain-canvas-container" title="Drag to rotate. Click to highlight skills."></div>
+
+    <header id="header-section">
+        <h1 class="magnetic">Ava Shah</h1>
         <p>Neuroscience | Caregiver Advocacy | EMT-B</p>
     </header>
 
     <div class="container">
-        <section>
+        
+        <section id="advocacy-section">
             <h2>Advocacy in Action</h2>
             <p>I am dedicated to protecting memory care households and shifting how we view medical recovery. Watch my TED-Ed talk, <strong>"The Missing Vital Sign,"</strong> below.</p>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/rHwoYGU_3UA" title="TED-Ed Talk" frameborder="0" allowfullscreen></iframe>
+            <div class="video-container magnetic">
+                <!-- Using youtube-nocookie for better privacy/loading -->
+                <iframe src="https://www.youtube-nocookie.com/embed/rHwoYGU_3UA" title="TED-Ed Talk" frameborder="0" allowfullscreen></iframe>
             </div>
         </section>
 
-        <section>
-            <h2>Initiatives & Leadership</h2>
+        <section id="leadership-section">
+            <h2 class="magnetic">Initiatives & Leadership</h2>
             <div class="card-grid">
                 <a href="https://pillarproject.online" target="_blank" class="card">
                     <h3>The Pillar Project ✿</h3>
@@ -194,58 +251,215 @@
             </div>
         </section>
 
-        <section>
-            <h2>The Research Garden</h2>
-            <div class="card" style="cursor: pointer;" onclick="document.getElementById('researchModal').style.display='flex'">
+        <section id="research-section">
+            <h2 class="magnetic">The Research Garden</h2>
+            <p><em>Grab and drag the card below to explore the garden physically.</em></p>
+            <!-- Draggable Card -->
+            <div class="card draggable magnetic" style="cursor: grab;" id="research-card">
                 <h3>📄 Literature Review: Childhood Malnutrition</h3>
                 <p>An investigation into how malnutrition impacts long-term neurodevelopment and behavior. <em>Click to read the abstract.</em></p>
             </div>
         </section>
 
-        <section>
+        <section id="experience-section">
             <h2>Experience & Service</h2>
             <div class="timeline">
-                <div class="timeline-item">
+                <div class="timeline-item magnetic">
                     <h3>East Hanover EMS | EMT-B</h3>
                     <p><em>2026 - Present</em> • Providing BLS care, vitals, charting, and airway management for 30+ patients during 6-12 weekly ambulance hours.</p>
                 </div>
-                <div class="timeline-item">
+                <div class="timeline-item magnetic">
                     <h3>Civil Air Patrol | Cadet Master Sergeant</h3>
                     <p><em>2023 - Present</em> • Lone Eagle Squadron. Led cadets in a 10-day military encampment; accrued 5+ flight hours.</p>
                 </div>
-                <div class="timeline-item">
+                <div class="timeline-item magnetic">
                     <h3>7 Cups Helpline | Certified Listener</h3>
                     <p><em>2026 - Present</em> • Completed 50+ hours of around-the-clock mental health support and care for platform members.</p>
                 </div>
             </div>
         </section>
-        
-        <section>
+
+        <section id="tech-section">
             <h2>Certifications & Fellowships</h2>
-            <p><strong>Clinical:</strong> BLS Provider • CPR • NREMT (Expected 2026)<br>
-            <strong>Technical:</strong> Kode With Klossy Scholar (Data Analysis / Python / AI)<br>
-            <strong>Languages:</strong> Spanish (Conversational) • Hindi (Conversational)</p>
+            <p>
+                <strong>Clinical:</strong> BLS Provider • CPR • NREMT (Expected 2026)<br>
+                <strong>Technical:</strong> <span id="easter-egg-trigger">Kode With Klossy Scholar</span> (Data Analysis / Python / AI)<br>
+                <strong>Languages:</strong> Spanish (Conversational) • Hindi (Conversational)
+            </p>
         </section>
     </div>
 
-    <!-- Interactive Modal -->
-    <div id="researchModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('researchModal').style.display='none'">&times;</span>
-            <h2>The Long-Term Consequences of Childhood Malnutrition on the Brain</h2>
-            <p><strong>Abstract:</strong> [Insert the full abstract from your paper here to explain your findings on the second 1,000 days of life.]</p>
-            <!-- Ensure you upload your PDF to GitHub and change href="#" to your exact file name below -->
-            <a href="#" class="btn" target="_blank">Download Full PDF</a>
+    <!-- Python Easter Egg Terminal -->
+    <div id="terminal-overlay">
+        <div class="terminal-header">
+            <span>ava_shah@kode_with_klossy: ~</span>
+            <span class="close-term" onclick="document.getElementById('terminal-overlay').style.display='none'">[X]</span>
+        </div>
+        <div id="term-output">
+Hint: Type 'run ava_skills.py' to execute data protocol.
+        </div>
+        <div id="term-input-line">
+            <span>$</span>
+            <input type="text" id="term-input" autocomplete="off" autofocus>
         </div>
     </div>
 
+    <!-- Interactive Scripts -->
     <script>
-        window.onclick = function(event) {
-            let modal = document.getElementById('researchModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
+        // 1. "Clarity" Spotlight Effect
+        const spotlight = document.getElementById('spotlight');
+        document.addEventListener('mousemove', e => {
+            requestAnimationFrame(() => {
+                spotlight.style.setProperty('--spotlight-x', `${e.clientX}px`);
+                spotlight.style.setProperty('--spotlight-y', `${e.clientY}px`);
+            });
+        });
+
+        // 2. EKG Scroll Progress Bar
+        const ekgPath = document.getElementById('ekg-path');
+        const pathLength = ekgPath.getTotalLength();
+        ekgPath.style.strokeDasharray = pathLength;
+        ekgPath.style.strokeDashoffset = pathLength;
+
+        window.addEventListener('scroll', () => {
+            const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = window.scrollY / scrollTotal;
+            // Draw the EKG line as we scroll down
+            const drawLength = pathLength * scrollPercentage;
+            ekgPath.style.strokeDashoffset = pathLength - drawLength;
+        });
+
+        // 3. Three.js Interactive Brain Model (Stylized Placeholder)
+        const container = document.getElementById('brain-canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(150, 150);
+        container.appendChild(renderer.domElement);
+
+        // Create a stylized "Brain" using an Icosahedron
+        const geometry = new THREE.IcosahedronGeometry(2, 2);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x7e22ce, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.8
+        });
+        const brainMesh = new THREE.Mesh(geometry, material);
+        scene.add(brainMesh);
+        camera.position.z = 4;
+
+        // Brain Interaction Logic
+        let isDragging = false, previousMousePosition = { x: 0, y: 0 };
+        
+        container.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if(isDragging) {
+                const deltaMove = { x: e.offsetX - previousMousePosition.x, y: e.offsetY - previousMousePosition.y };
+                brainMesh.rotation.y += deltaMove.x * 0.01;
+                brainMesh.rotation.x += deltaMove.y * 0.01;
             }
-        }
+            previousMousePosition = { x: e.offsetX, y: e.offsetY };
+        });
+
+        // Click Brain to highlight Leadership (simulating specific lobe click)
+        container.addEventListener('click', (e) => {
+            if(!isDragging) { // Prevent click trigger when just dragging
+                document.getElementById('leadership-section').scrollIntoView({ behavior: 'smooth' });
+                const cards = document.querySelectorAll('#leadership-section .card');
+                cards.forEach(card => {
+                    card.style.transform = 'scale(1.05)';
+                    setTimeout(() => card.style.transform = '', 500);
+                });
+            }
+        });
+
+        const animate = function () {
+            requestAnimationFrame(animate);
+            if(!isDragging) {
+                brainMesh.rotation.y += 0.005;
+                brainMesh.rotation.x += 0.002;
+            }
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        // 4. Magnetic Buttons & Icons
+        const magnets = document.querySelectorAll('.magnetic');
+        magnets.forEach(magnet => {
+            magnet.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                this.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+            });
+            magnet.addEventListener('mouseleave', function() {
+                this.style.transform = `translate(0px, 0px) scale(1)`;
+            });
+        });
+
+        // 5. Draggable Research Garden
+        const draggable = document.getElementById('research-card');
+        let dragActive = false, startX, startY, currentX = 0, currentY = 0;
+
+        draggable.addEventListener('mousedown', (e) => {
+            // Only drag if not clicking the actual text
+            dragActive = true;
+            startX = e.clientX - currentX;
+            startY = e.clientY - currentY;
+            draggable.style.zIndex = 100;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!dragActive) return;
+            e.preventDefault();
+            currentX = e.clientX - startX;
+            currentY = e.clientY - startY;
+            // Apply drag, but limit range to not break layout completely
+            draggable.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX * 0.02}deg)`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            dragActive = false;
+            draggable.style.zIndex = '1';
+            // Optional: snap back to place smoothly
+            // draggable.style.transform = 'translate(0px, 0px)';
+            // currentX = 0; currentY = 0;
+        });
+
+        // 6. Python Easter Egg Terminal
+        const termOverlay = document.getElementById('terminal-overlay');
+        const termInput = document.getElementById('term-input');
+        const termOutput = document.getElementById('term-output');
+
+        document.getElementById('easter-egg-trigger').addEventListener('click', () => {
+            termOverlay.style.display = 'flex';
+            termInput.focus();
+        });
+
+        termInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim();
+                termOutput.innerHTML += `\n$ ${cmd}\n`;
+                
+                if (cmd === 'run ava_skills.py') {
+                    termOutput.innerHTML += `\n> INITIALIZING NEURAL UPLINK...\n`;
+                    setTimeout(() => termOutput.innerHTML += `> EXTRACTING KODE WITH KLOSSY DATABASES...\n`, 500);
+                    setTimeout(() => termOutput.innerHTML += `> PROFICIENCY FOUND: [Python, Data Analysis, AI Models]\n`, 1000);
+                    setTimeout(() => termOutput.innerHTML += `> STATUS: CERTIFIED SCHOLAR.\n> EOF\n`, 1500);
+                } else if (cmd === 'clear') {
+                    termOutput.innerHTML = '';
+                } else {
+                    termOutput.innerHTML += `Command not found: ${cmd}. Try 'run ava_skills.py'\n`;
+                }
+                
+                this.value = '';
+                // Auto scroll to bottom
+                termOutput.scrollTop = termOutput.scrollHeight;
+            }
+        });
+
     </script>
 </body>
 </html>
