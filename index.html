@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ava Shah | Interactive Resume</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap');
+        
+        :root {
+            --deep-plum: #4a044e;
+            --purple-main: #7e22ce;
+            --lavender: #f3e8ff;
+            --bg-color: #faf5ff;
+            --text-dark: #2e1065;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            /* Subtle floral/dotted background */
+            background-image: radial-gradient(var(--lavender) 2px, transparent 2px);
+            background-size: 40px 40px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--deep-plum);
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--bg-color) 100%);
+            border-bottom: 2px solid var(--purple-main);
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Blooming Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(126, 34, 206, 0.1);
+            transition: all 0.4s ease;
+            border-top: 5px solid var(--lavender);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-top-color: var(--purple-main);
+            box-shadow: 0 10px 20px rgba(126, 34, 206, 0.2);
+            background-color: #fffafb; 
+        }
+
+        /* Video Embed */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.2);
+            margin: 2rem 0;
+            border: 4px solid var(--lavender);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(46, 16, 101, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            border-left: 8px solid var(--purple-main);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--deep-plum);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--purple-main);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--deep-plum);
+        }
+
+        /* Floral Timeline */
+        .timeline {
+            border-left: 3px solid var(--lavender);
+            margin-left: 1rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '✿';
+            color: var(--purple-main);
+            position: absolute;
+            left: -2.85rem;
+            top: 0;
+            font-size: 1.5rem;
+            background: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ava Shah</h1>
+        <p>Neuroscience | Caregiver Advocacy | EMT-B</p>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2>Advocacy in Action</h2>
+            <p>I am dedicated to protecting memory care households and shifting how we view medical recovery. Watch my TED-Ed talk, <strong>"The Missing Vital Sign,"</strong> below.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/rHwoYGU_3UA" title="TED-Ed Talk" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <section>
+            <h2>Initiatives & Leadership</h2>
+            <div class="card-grid">
+                <a href="https://pillarproject.online" target="_blank" class="card">
+                    <h3>The Pillar Project ✿</h3>
+                    <p><strong>Co-Founder & President.</strong> An upcoming 501c3 dedicated to uplifting caregivers and patients facing financial struggles, complete with memory care blocks and our upcoming children's book <em>"Case Alzheimers"</em>.</p>
+                </a>
+                <a href="https://shivsthirdeye.org/our-team/" target="_blank" class="card">
+                    <h3>Shiv's Third Eye ✿</h3>
+                    <p><strong>Youth Council.</strong> Co-organizing mental wellness fairs and serving as a liaison to local school organizations for a prominent 501c3 supporting youth mental health.</p>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2>The Research Garden</h2>
+            <div class="card" style="cursor: pointer;" onclick="document.getElementById('researchModal').style.display='flex'">
+                <h3>📄 Literature Review: Childhood Malnutrition</h3>
+                <p>An investigation into how malnutrition impacts long-term neurodevelopment and behavior. <em>Click to read the abstract.</em></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Experience & Service</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>East Hanover EMS | EMT-B</h3>
+                    <p><em>2026 - Present</em> • Providing BLS care, vitals, charting, and airway management for 30+ patients during 6-12 weekly ambulance hours.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Civil Air Patrol | Cadet Master Sergeant</h3>
+                    <p><em>2023 - Present</em> • Lone Eagle Squadron. Led cadets in a 10-day military encampment; accrued 5+ flight hours.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>7 Cups Helpline | Certified Listener</h3>
+                    <p><em>2026 - Present</em> • Completed 50+ hours of around-the-clock mental health support and care for platform members.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Certifications & Fellowships</h2>
+            <p><strong>Clinical:</strong> BLS Provider • CPR • NREMT (Expected 2026)<br>
+            <strong>Technical:</strong> Kode With Klossy Scholar (Data Analysis / Python / AI)<br>
+            <strong>Languages:</strong> Spanish (Conversational) • Hindi (Conversational)</p>
+        </section>
+    </div>
+
+    <!-- Interactive Modal -->
+    <div id="researchModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('researchModal').style.display='none'">&times;</span>
+            <h2>The Long-Term Consequences of Childhood Malnutrition on the Brain</h2>
+            <p><strong>Abstract:</strong> [Insert the full abstract from your paper here to explain your findings on the second 1,000 days of life.]</p>
+            <!-- Ensure you upload your PDF to GitHub and change href="#" to your exact file name below -->
+            <a href="#" class="btn" target="_blank">Download Full PDF</a>
+        </div>
+    </div>
+
+    <script>
+        window.onclick = function(event) {
+            let modal = document.getElementById('researchModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
